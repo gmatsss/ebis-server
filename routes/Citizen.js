@@ -9,6 +9,8 @@ const {
   delete_citizen,
 } = require("../controllers/Citizen");
 
+//edited
+
 router.post("/create/record", create_citizen);
 router.get("/g/record", get_citizen);
 router.post("/u/record", update_citizen);
