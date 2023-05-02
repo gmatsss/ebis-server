@@ -1,5 +1,5 @@
 //import models from user.models
-const User = require("../models/User");
+const User = require("../models/user");
 
 //import for login user
 const jwt = require("jsonwebtoken");
