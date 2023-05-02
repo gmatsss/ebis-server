@@ -3,7 +3,7 @@ after the req and res is done it will
 proceed the code by next
 */
 
-const User = require("../models/User");
+const User = require("../models/User_model");
 
 exports.userRegisterValidator = (req, res, next) => {
   //validating user name must not null
