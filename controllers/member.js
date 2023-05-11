@@ -94,22 +94,6 @@ exports.delete_member = async (req, res) => {
     const Modifiedby = req.body.Modifiedby;
     console.log(_id);
 
-    // const complain_exist = await Complainss.findOne({ compid: _id, Status: 1 });
-
-    // if (complain_exist)
-    //   throw createError(
-    //     403,
-    //     `Cannot be erased since there is already a record in the complaint table.`
-    //   );
-
-    // const document_exist = await Docs.findOne({ compid: _id, Status: 1 });
-
-    // if (document_exist)
-    //   throw createError(
-    //     403,
-    //     `Cannot be erased since there is already a record in the Document table.`
-    //   );
-
     const x = await Member.findOne({ _id: _id });
     if (!x) throw createError(403, `Member not found!`);
     x.Status = 0;

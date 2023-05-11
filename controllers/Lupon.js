@@ -339,6 +339,7 @@ exports.create_docs = async (req, res, next) => {
     const case_exist = await Docs.findOne({
       docname: doc_file.name,
       compid: { $eq: compid },
+      Status: 1,
     });
     if (case_exist)
       throw createError(403, `Document ${doc_file.name} already saved!`);
