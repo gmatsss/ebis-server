@@ -75,6 +75,10 @@ app.use("/member", memberRoutes);
 const reportRoutes = require("./routes/reports");
 app.use("/report", reportRoutes);
 
+//location routes start
+const locationRoutes = require("./routes/locations");
+app.use("/location", locationRoutes);
+
 //port
 const port = process.env.PORT;
 
