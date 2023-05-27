@@ -4,7 +4,6 @@ const createError = require("http-errors");
 
 exports.create_report = async (req, res) => {
   try {
-    console.log("asd");
     const reportname = req.body.reportname;
     const menuname = req.body.menuname;
     const categoryname = req.body.categoryname;
@@ -24,9 +23,9 @@ exports.create_report = async (req, res) => {
       Status: 1,
     };
 
-    const MenuExist = await reports.findOne({ menuname: menuname });
-    if (MenuExist)
-      throw createError(403, `Menu name ${menuname} already saved!`);
+    const reportnameExist = await reports.findOne({ reportname: reportname });
+    if (reportnameExist)
+      throw createError(403, `Menu name ${reportname} already saved!`);
 
     const newReport = new reports(details);
     const x = await newReport.save(); //saving to db
@@ -47,9 +46,8 @@ exports.get_report = async (req, res) => {
     if (!x) throw createError(403, "Not found!");
 
     //response with delay seconds
-    setTimeout(function () {
-      res.send(x);
-    }, 1200);
+
+    res.send(x);
   } catch (e) {
     res.send({ error: "Something went wrong, Please try again" });
   }
@@ -74,12 +72,12 @@ exports.update_report = async (req, res) => {
     const Modifiedby = req.body.Modifiedby;
     const _id = req.body._id;
 
-    const Menuexist = await reports.findOne({
-      menuname: menuname,
+    const reportnameexist = await reports.findOne({
+      reportname: reportname,
       _id: { $ne: _id },
     });
-    if (Menuexist)
-      throw createError(403, `Menu name ${menuname} already saved!`);
+    if (reportnameexist)
+      throw createError(403, `Menu name ${reportname} already saved!`);
 
     const x = await reports.findOne({ _id: _id });
     if (!x) throw createError(403, `Report not found!`);

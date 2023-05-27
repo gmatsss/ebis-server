@@ -62,6 +62,7 @@ exports.update_citizen = async (req, res) => {
     const _id = req.body._id;
 
     const CodeExist = await Citizen.findOne({ Code: Code, _id: { $ne: _id } });
+    console.log(CodeExist);
     if (CodeExist) throw createError(403, `Code ${Code} already saved!`);
 
     const x = await Citizen.findOne({ _id: _id });
