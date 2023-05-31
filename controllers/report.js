@@ -1,6 +1,8 @@
 const DATE = require("./date");
 const reports = require("../models/reports");
 const createError = require("http-errors");
+const Complainss = require("../models/Lupon_complain");
+const Complain = require("../models/Lupon");
 
 exports.create_report = async (req, res) => {
   try {
@@ -129,5 +131,29 @@ exports.create_setup = async (req, res) => {
     res.send({ success: "Successfully update setup report" });
   } catch (e) {
     res.send({ error: e.message });
+  }
+};
+
+exports.get_case_one = async (req, res) => {
+  try {
+    //sort by code
+    const id = req.params.id;
+    const x = await Complain.findOne({ _id: id, Status: 1 });
+    if (!x) throw createError(403, "Complain Not found!");
+    res.send(x);
+  } catch (e) {
+    res.send({ error: "Something went wrong, Please try again" });
+  }
+};
+
+exports.get_complain_one = async (req, res) => {
+  try {
+    //sort by code
+    const id = req.params.id;
+    const x = await Complainss.findOne({ compid: id, Status: 1 });
+    if (!x) throw createError(403, "Complain Not found!");
+    res.send(x);
+  } catch (e) {
+    res.send({ error: "Something went wrong, Please try again" });
   }
 };
