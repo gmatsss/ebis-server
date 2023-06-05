@@ -9,4 +9,4 @@ const Docs = new mongoose.Schema({
   Status: Number,
 });
 
-module.exports = mongoose.model("Docs", Docs);
+module.exports = mongoose.model("Lupon_Docs", Docs);

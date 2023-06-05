@@ -1,7 +1,8 @@
 const mongoose = require("mongoose");
 
-var Province = new mongoose.Schema({
+var Cities = new mongoose.Schema({
   region: String,
+  province: String,
   code: String,
   descripion: String,
   dateCreatedTime: String,
@@ -11,4 +12,4 @@ var Province = new mongoose.Schema({
   status: Number,
 });
 
-module.exports = mongoose.model("Province", Province);
+module.exports = mongoose.model("cities", Cities);

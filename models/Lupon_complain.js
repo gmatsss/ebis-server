@@ -12,4 +12,4 @@ const Complainss = new mongoose.Schema({
   Status: Number,
 });
 
-module.exports = mongoose.model("Complainss", Complainss);
+module.exports = mongoose.model("Lupon_Complain", Complainss);

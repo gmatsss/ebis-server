@@ -24,4 +24,4 @@ var member_action = new mongoose.Schema({
   Status: Number,
 });
 
-module.exports = mongoose.model("member_action", member_action);
+module.exports = mongoose.model("Lupon_member_action", member_action);
