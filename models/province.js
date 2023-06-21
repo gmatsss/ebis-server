@@ -3,7 +3,7 @@ const mongoose = require("mongoose");
 var Province = new mongoose.Schema({
   region: String,
   code: String,
-  descripion: String,
+  description: String,
   dateCreatedTime: String,
   createdBy: String,
   dateModifiedTime: String,

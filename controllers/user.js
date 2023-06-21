@@ -8,6 +8,7 @@ require("dotenv").config();
 //passing to routes coding for api
 exports.register = async (req, res) => {
   //check if user already exists
+
   const usernameExists = await User.findOne({
     username: req.body.username,
   });
@@ -66,10 +67,12 @@ exports.login = async (req, res) => {
     res.cookie("jwt", token, { expire: new Date() + 9999, httpOnly: true });
 
     //return a response to user
+
     const { username } = user;
+
     return res.json({
       message: "Success login",
-      username,
+      user,
     });
   });
 };
@@ -84,9 +87,19 @@ exports.logout = (req, res) => {
 };
 
 exports.getLoggedInUser = (req, res) => {
-  const { username } = req.user;
+  const user = req.user; //object user
   return res.status(200).json({
     message: "User is still logged in",
-    username,
+    user,
   });
 };
+
+// exports.get_size = (req, res) => {
+//   try {
+//     const check = db.runCommand({ dbStats: 1, scale: 1024, freeStorage: 1 }); //object user
+//     console.log(check);
+//     res.send(check);
+//   } catch (error) {
+//     console.log(error);
+//   }
+// };

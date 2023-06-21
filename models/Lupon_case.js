@@ -1,16 +1,15 @@
 const mongoose = require("mongoose");
 
-var Member = new mongoose.Schema({
+var Lupon_case = new mongoose.Schema({
   region: String,
   province: String,
   city: String,
   district: String,
   barangay: String,
-  code: String,
-  fname: String,
-  lname: String,
-  gender: String,
-  position: String,
+  caseno: String,
+  case_date: String,
+  case_nature: String,
+  description: String,
   DateCreated: String,
   Createdby: String,
   DateModified: String,
@@ -18,4 +17,4 @@ var Member = new mongoose.Schema({
   Status: Number,
 });
 
-module.exports = mongoose.model("Lupon_Member", Member);
+module.exports = mongoose.model("Lupon_case", Lupon_case);

@@ -7,6 +7,7 @@ const {
   login,
   logout,
   getLoggedInUser,
+  get_size,
 } = require("../controllers/user");
 
 //middleware
@@ -19,6 +20,7 @@ const { verifyToken } = require("../middleware/auth");
 router.post("/register", userRegisterValidator, register);
 router.post("/login", login);
 router.get("/logout", logout);
+// router.get("/size", get_size);
 
 //roter 1st to verify the user after that it will get its id then getloggedin user
 router.get("/userlog", verifyToken, userById, getLoggedInUser);

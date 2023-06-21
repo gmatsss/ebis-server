@@ -192,3 +192,71 @@ exports.get_barangays = async (req, res) => {
     res.send({ error: "Something went wrong, Please try again" });
   }
 };
+
+exports.get_user_loc = async (req, res) => {
+  try {
+    //sort by code
+    const usr_barangay = req.params.barangay;
+    const usr_district = req.params.district;
+    const usr_city = req.params.city;
+    const usr_province = req.params.province;
+    const usr_region = req.params.region;
+
+    const region_res = await region.findOne({
+      code: { $eq: usr_region },
+      status: 1,
+    });
+
+    const prov_res = await province.findOne({
+      region: { $eq: usr_region },
+      code: { $eq: usr_province },
+      status: 1,
+    });
+
+    const city_res = await cities.findOne({
+      region: { $eq: usr_region },
+      province: { $eq: usr_province },
+      code: { $eq: usr_city },
+      status: 1,
+    });
+
+    const district_res = await district.findOne({
+      region: { $eq: usr_region },
+      province: { $eq: usr_province },
+      city: { $eq: usr_city },
+      code: { $eq: usr_district },
+      status: 1,
+    });
+
+    const barangay_res = await barangay.findOne({
+      region: { $eq: usr_region },
+      province: { $eq: usr_province },
+      city: { $eq: usr_city },
+      district: { $eq: usr_district },
+      code: { $eq: usr_barangay },
+      status: 1,
+    });
+
+    const loc = {
+      region: region_res.description,
+      province: prov_res.description,
+      city: city_res.description,
+      district: district_res.description,
+      barangay: barangay_res.description,
+    };
+
+    if (
+      !loc.region ||
+      !loc.province ||
+      !loc.city ||
+      !loc.district ||
+      !loc.barangay
+    )
+      throw createError(403, "Not found!");
+
+    res.send(loc);
+  } catch (e) {
+    console.log(e);
+    res.send({ error: "Something went wrong, Please try again" });
+  }
+};

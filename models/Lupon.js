@@ -5,7 +5,6 @@ var Complain = new mongoose.Schema({
   province: String,
   city: String,
   district: String,
-  zone: String,
   barangay: String,
   caseno: String,
   nameofcomp: String,
@@ -29,4 +28,4 @@ var Complain = new mongoose.Schema({
   Status: Number,
 });
 
-module.exports = mongoose.model("Lupon_case", Complain);
+module.exports = mongoose.model("Lupon", Complain);

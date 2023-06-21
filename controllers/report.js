@@ -2,18 +2,32 @@ const DATE = require("./date");
 const reports = require("../models/reports");
 const createError = require("http-errors");
 const Complainss = require("../models/Lupon_complain");
-const Complain = require("../models/Lupon");
+const Lupon_case = require("../models/Lupon_case");
+const Lupon_respondent = require("../models/Lupon_respondent");
+const Lupon_complainant = require("../models/Lupon_complainant");
+const Lupon_hearing = require("../models/Lupon_hearing");
+const Lupon_mem_act = require("../models/Lupon_member&action");
 
 exports.create_report = async (req, res) => {
   try {
+    const barangay = req.body.barangay;
+    const district = req.body.district;
+    const city = req.body.city;
+    const province = req.body.province;
+    const region = req.body.region;
     const reportname = req.body.reportname;
     const menuname = req.body.menuname;
     const categoryname = req.body.categoryname;
-    const reportsetup = req.body.reportsetup;
+    // const reportsetup = req.body.reportsetup;
     const Createdby = req.body.Createdby;
     const Modifiedby = req.body.Modifiedby;
 
     const details = {
+      region: region,
+      province: province,
+      city: city,
+      district: district,
+      barangay: barangay,
       reportname: reportname,
       menuname: menuname,
       categoryname: categoryname,
@@ -25,7 +39,14 @@ exports.create_report = async (req, res) => {
       Status: 1,
     };
 
-    const reportnameExist = await reports.findOne({ reportname: reportname });
+    const reportnameExist = await reports.findOne({
+      reportname: reportname,
+      barangay: { $eq: barangay },
+      district: { $eq: district },
+      city: { $eq: city },
+      province: { $eq: province },
+      region: { $eq: region },
+    });
     if (reportnameExist)
       throw createError(403, `Menu name ${reportname} already saved!`);
 
@@ -33,7 +54,7 @@ exports.create_report = async (req, res) => {
     const x = await newReport.save(); //saving to db
 
     if (!x) throw createError(403, "Something went wrong while creating");
-    console.log(x);
+
     res.send({ success: `Successfully Created` });
   } catch (e) {
     res.send({ error: e.message });
@@ -43,12 +64,24 @@ exports.create_report = async (req, res) => {
 exports.get_report = async (req, res) => {
   try {
     //sort by code
-    const x = await reports.find({ Status: 1 }).sort({ DateModified: -1 });
+    const barangay = req.params.barangay;
+    const district = req.params.district;
+    const city = req.params.city;
+    const province = req.params.province;
+    const region = req.params.region;
+
+    const x = await reports
+      .find({
+        region: region,
+        province: province,
+        city: city,
+        district: district,
+        barangay: barangay,
+        Status: 1,
+      })
+      .sort({ DateModified: -1 });
 
     if (!x) throw createError(403, "Not found!");
-
-    //response with delay seconds
-
     res.send(x);
   } catch (e) {
     res.send({ error: "Something went wrong, Please try again" });
@@ -68,6 +101,13 @@ exports.one_report = async (req, res) => {
 
 exports.update_report = async (req, res) => {
   try {
+    //location
+    const barangay = req.body.barangay;
+    const district = req.body.district;
+    const city = req.body.city;
+    const province = req.body.province;
+    const region = req.body.region;
+
     const reportname = req.body.reportname;
     const menuname = req.body.menuname;
     const categoryname = req.body.categoryname;
@@ -77,6 +117,11 @@ exports.update_report = async (req, res) => {
     const reportnameexist = await reports.findOne({
       reportname: reportname,
       _id: { $ne: _id },
+      barangay: { $eq: barangay },
+      district: { $eq: district },
+      city: { $eq: city },
+      province: { $eq: province },
+      region: { $eq: region },
     });
     if (reportnameexist)
       throw createError(403, `Menu name ${reportname} already saved!`);
@@ -90,8 +135,6 @@ exports.update_report = async (req, res) => {
 
     (x.DateModified = DATE.dateWithTime()), (x.Modifiedby = Modifiedby);
     x.save();
-
-    console.log(x);
 
     res.send({ success: "Successfully Edit Report" });
   } catch (e) {
@@ -138,9 +181,40 @@ exports.get_case_one = async (req, res) => {
   try {
     //sort by code
     const id = req.params.id;
-    const x = await Complain.findOne({ _id: id, Status: 1 });
-    if (!x) throw createError(403, "Complain Not found!");
-    res.send(x);
+
+    const Lcase = await Lupon_case.findOne({ _id: id, Status: 1 });
+    if (!Lcase) throw createError(403, " Not found!");
+
+    const respondents = await Lupon_respondent.find({ caseid: id, Status: 1 });
+    if (!respondents) throw createError(403, " Not found!");
+
+    const complainant = await Lupon_complainant.find({ caseid: id, Status: 1 });
+    if (!complainant) throw createError(403, " Not found!");
+
+    const arrayofresp = respondents.map((resp) => {
+      return resp.nameofresp;
+    });
+    const arrayofcomp = complainant.map((resp) => {
+      return resp.nameofcomp;
+    });
+
+    const hearing = await Lupon_hearing.find({ caseid: id, Status: 1 });
+    if (!hearing) throw createError(403, " Not found!");
+
+    const mem_act = await Lupon_mem_act.find({ caseid: id, Status: 1 });
+    if (!mem_act) throw createError(403, " Not found!");
+
+    const thiscase = {
+      caseno: Lcase.caseno,
+      casenature: Lcase.case_nature,
+      casedesc: Lcase.description,
+      complainant: arrayofcomp,
+      respondent: arrayofresp,
+      hearing: hearing,
+      members: mem_act,
+    };
+
+    res.send(thiscase);
   } catch (e) {
     res.send({ error: "Something went wrong, Please try again" });
   }
@@ -150,8 +224,36 @@ exports.get_complain_one = async (req, res) => {
   try {
     //sort by code
     const id = req.params.id;
-    const x = await Complainss.findOne({ compid: id, Status: 1 });
+    const x = await Complainss.find({ compid: id, Status: 1 });
     if (!x) throw createError(403, "Complain Not found!");
+    res.send(x);
+  } catch (e) {
+    res.send({ error: "Something went wrong, Please try again" });
+  }
+};
+
+exports.get_report_window = async (req, res) => {
+  try {
+    //sort by code
+    const barangay = req.params.barangay;
+    const district = req.params.district;
+    const city = req.params.city;
+    const province = req.params.province;
+    const region = req.params.region;
+
+    const x = await reports
+      .find({
+        region: region,
+        province: province,
+        city: city,
+        district: district,
+        barangay: barangay,
+        menuname: "Lupon",
+        Status: 1,
+      })
+      .sort({ DateModified: -1 });
+
+    if (!x) throw createError(403, "Not found!");
     res.send(x);
   } catch (e) {
     res.send({ error: "Something went wrong, Please try again" });

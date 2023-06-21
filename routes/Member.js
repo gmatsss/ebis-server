@@ -9,7 +9,8 @@ const {
   delete_member,
 } = require("../controllers/member");
 
-router.get("/g/record", get_member);
+// router.get("/g/record", get_member);
+router.get("/g/record/:barangay/:district/:city/:province/:region", get_member);
 router.post("/create/record", create_member);
 router.post("/u/record", update_member);
 router.post("/d/record", delete_member);

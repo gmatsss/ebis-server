@@ -6,7 +6,7 @@ var Barangay = new mongoose.Schema({
   city: String,
   district: String,
   code: String,
-  descripion: String,
+  description: String,
   dateCreatedTime: String,
   createdBy: String,
   dateModifiedTime: String,

@@ -4,15 +4,24 @@ const createError = require("http-errors");
 
 exports.get_member = async (req, res) => {
   try {
+    const barangay = req.params.barangay;
+    const district = req.params.district;
+    const city = req.params.city;
+    const province = req.params.province;
+    const region = req.params.region;
     //sort by code
-    const x = await Member.find({ Status: 1 }).sort({ Code: 1 });
+    const x = await Member.find({
+      region: region,
+      province: province,
+      city: city,
+      district: district,
+      barangay: barangay,
+      Status: 1,
+    }).sort({ Code: 1 });
 
     if (!x) throw createError(403, "Not found!");
 
-    //response with delay seconds
-    setTimeout(function () {
-      res.send(x);
-    }, 1200);
+    res.send(x);
   } catch (e) {
     res.send({ error: "Something went wrong, Please try again" });
   }
@@ -20,6 +29,12 @@ exports.get_member = async (req, res) => {
 
 exports.create_member = async (req, res) => {
   try {
+    const barangay = req.body.barangay;
+    const district = req.body.district;
+    const city = req.body.city;
+    const province = req.body.province;
+    const region = req.body.region;
+
     const code = req.body.code;
     const fname = req.body.fname;
     const lname = req.body.lname;
@@ -29,6 +44,11 @@ exports.create_member = async (req, res) => {
     const Modifiedby = req.body.Modifiedby;
 
     const details = {
+      region: region,
+      province: province,
+      city: city,
+      district: district,
+      barangay: barangay,
       code: code,
       fname: fname,
       lname: lname,
@@ -41,7 +61,14 @@ exports.create_member = async (req, res) => {
       Status: 1,
     };
 
-    const CodeExist = await Member.findOne({ code: code });
+    const CodeExist = await Member.findOne({
+      code: code,
+      barangay: { $eq: barangay },
+      district: { $eq: district },
+      city: { $eq: city },
+      province: { $eq: province },
+      region: { $eq: region },
+    });
     if (CodeExist) throw createError(403, `Code ${code} already saved!`);
 
     const newMember = new Member(details);
@@ -57,6 +84,11 @@ exports.create_member = async (req, res) => {
 
 exports.update_member = async (req, res) => {
   try {
+    const barangay = req.body.barangay;
+    const district = req.body.district;
+    const city = req.body.city;
+    const province = req.body.province;
+    const region = req.body.region;
     const code = req.body.code;
     const fname = req.body.fname;
     const lname = req.body.lname;
@@ -65,7 +97,15 @@ exports.update_member = async (req, res) => {
     const Modifiedby = req.body.Modifiedby;
     const _id = req.body._id;
 
-    const CodeExist = await Member.findOne({ code: code, _id: { $ne: _id } });
+    const CodeExist = await Member.findOne({
+      code: code,
+      _id: { $ne: _id },
+      barangay: { $eq: barangay },
+      district: { $eq: district },
+      city: { $eq: city },
+      province: { $eq: province },
+      region: { $eq: region },
+    });
     if (CodeExist) throw createError(403, `Member Code ${code} already saved!`);
 
     const x = await Member.findOne({ _id: _id });
@@ -92,7 +132,7 @@ exports.delete_member = async (req, res) => {
   try {
     const _id = req.body._id;
     const Modifiedby = req.body.Modifiedby;
-    console.log(_id);
+    console.log(Modifiedby);
 
     const x = await Member.findOne({ _id: _id });
     if (!x) throw createError(403, `Member not found!`);

@@ -4,7 +4,7 @@ var Cities = new mongoose.Schema({
   region: String,
   province: String,
   code: String,
-  descripion: String,
+  description: String,
   dateCreatedTime: String,
   createdBy: String,
   dateModifiedTime: String,

@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 const Docs = new mongoose.Schema({
-  compid: String,
+  caseid: String,
   docname: String,
   DateCreated: String,
   Createdby: String,

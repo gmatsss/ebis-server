@@ -11,6 +11,7 @@ const {
   get_cities,
   get_districts,
   get_barangays,
+  get_user_loc,
   // create_province,
 } = require("../controllers/location");
 
@@ -26,4 +27,9 @@ router.get("/d/record/:city/:province/:region", get_districts);
 router.get("/b/record/:district/:city/:province/:region", get_barangays);
 // router.post("/create/p/record", create_province);
 
+//get user location
+router.get(
+  "/user/record/:barangay/:district/:city/:province/:region",
+  get_user_loc
+);
 module.exports = router;

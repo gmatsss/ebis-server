@@ -35,7 +35,11 @@ const {
 const { file_upload } = require("../middleware/file_upload");
 
 router.post("/create/record", create_complain, file_upload);
-router.get("/g/record", get_complain);
+// router.get("/g/record", get_complain);
+router.get(
+  "/g/record/:barangay/:district/:city/:province/:region",
+  get_complain
+);
 router.get("/g/one/record/:id", get_complain_one);
 router.post("/u/record", update_complain, file_upload);
 //softdelete

@@ -5,6 +5,11 @@ const crypto = require("crypto");
 //usermodel
 const userSchema = new mongoose.Schema(
   {
+    region: String,
+    province: String,
+    city: String,
+    district: String,
+    barangay: String,
     username: {
       type: "string",
       required: true,

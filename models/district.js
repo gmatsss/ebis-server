@@ -5,7 +5,7 @@ var District = new mongoose.Schema({
   province: String,
   city: String,
   code: String,
-  descripion: String,
+  description: String,
   dateCreatedTime: String,
   createdBy: String,
   dateModifiedTime: String,

@@ -8,11 +8,16 @@ const fs = require("fs");
 const Complainss = require("../models/Lupon_complain");
 const Docs = require("../models/Lupon_docs_complain");
 const Member = require("../models/member");
-
 const member_action = require("../models/Lupon_member&action");
 
 exports.create_complain = async (req, res, next) => {
   try {
+    const barangay = req.body.barangay;
+    const district = req.body.district;
+    const city = req.body.city;
+    const province = req.body.province;
+    const region = req.body.region;
+
     const caseno = req.body.caseno;
     const nameofcomp = req.body.nameofcomp;
     const genderofcomp = req.body.genderofcomp;
@@ -33,6 +38,11 @@ exports.create_complain = async (req, res, next) => {
     const Modifiedby = req.body.Modifiedby;
 
     const details = {
+      region: region,
+      province: province,
+      city: city,
+      district: district,
+      barangay: barangay,
       caseno: caseno,
       nameofcomp: nameofcomp,
       genderofcomp: genderofcomp,
@@ -56,7 +66,14 @@ exports.create_complain = async (req, res, next) => {
       Status: 1,
     };
 
-    const case_exist = await Complain.findOne({ caseno: caseno });
+    const case_exist = await Complain.findOne({
+      caseno: caseno,
+      barangay: { $eq: barangay },
+      district: { $eq: district },
+      city: { $eq: city },
+      province: { $eq: province },
+      region: { $eq: region },
+    });
     if (case_exist) throw createError(403, `Case No ${caseno} already saved!`);
 
     const newComplain = new Complain(details);
@@ -78,11 +95,21 @@ exports.create_complain = async (req, res, next) => {
 exports.get_complain = async (req, res) => {
   try {
     //sort by code
-    const x = await Complain.find({ Status: 1 }).sort({ DateModified: -1 });
+    const barangay = req.params.barangay;
+    const district = req.params.district;
+    const city = req.params.city;
+    const province = req.params.province;
+    const region = req.params.region;
+    const x = await Complain.find({
+      Status: 1,
+      region: region,
+      province: province,
+      city: city,
+      district: district,
+      barangay: barangay,
+    }).sort({ DateModified: -1 });
 
     if (!x) throw createError(403, "Complain Not found!");
-
-    //response with delay seconds
     setTimeout(function () {
       res.send(x);
     }, 1200);
@@ -105,6 +132,12 @@ exports.get_complain_one = async (req, res) => {
 
 exports.update_complain = async (req, res, next) => {
   try {
+    const barangay = req.body.barangay;
+    const district = req.body.district;
+    const city = req.body.city;
+    const province = req.body.province;
+    const region = req.body.region;
+
     const caseno = req.body.caseno;
     const nameofcomp = req.body.nameofcomp;
     const genderofcomp = req.body.genderofcomp;
@@ -128,6 +161,11 @@ exports.update_complain = async (req, res, next) => {
     const case_exist = await Complain.findOne({
       caseno: caseno,
       _id: { $ne: _id },
+      barangay: { $eq: barangay },
+      district: { $eq: district },
+      city: { $eq: city },
+      province: { $eq: province },
+      region: { $eq: region },
     });
     if (case_exist) throw createError(403, `Case No ${caseno} already saved!`);
 
@@ -210,7 +248,9 @@ exports.get_complains = async (req, res) => {
 
     if (!x) throw createError(403, "Complain Not found!");
 
-    res.send(x);
+    setTimeout(function () {
+      res.send(x);
+    }, 500);
   } catch (e) {
     res.send({ error: "Something went wrong, Please try again" });
   }
@@ -464,9 +504,11 @@ exports.get_casemember = async (req, res) => {
       DateModified: -1,
     });
 
-    if (!x) throw createError(403, "Complain Not found!");
+    if (!x) throw createError(403, "Member Not found!");
 
-    res.send(x);
+    setTimeout(function () {
+      res.send(x);
+    }, 500);
   } catch (e) {
     res.send({ error: "Something went wrong, Please try again" });
   }
@@ -547,7 +589,9 @@ exports.get_remarks = async (req, res) => {
     if (!resu) return;
     const data = resu.remarks;
     if (!data) throw createError(403, "Remarks Not found!");
-    res.send(data);
+    setTimeout(function () {
+      res.send(data);
+    }, 500);
   } catch (e) {
     res.send({ error: e });
   }
