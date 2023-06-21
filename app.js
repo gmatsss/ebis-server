@@ -34,7 +34,7 @@ mongoose
 app.use(morgan("dev"));
 var corsOptions = {
   // "http://localhost:8000",https://ebis.onrender.com
-  origin: "http://localhost:8000", //to the client side connection
+  origin: "https://ebis.onrender.com", //to the client side connection
   methods: ["GET", "POST"],
   credentials: true,
   preflightContinue: true,
